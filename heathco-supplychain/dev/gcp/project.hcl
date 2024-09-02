@@ -1,5 +1,6 @@
 # Set common variables for the environment. This is automatically pulled in in the root terragrunt.hcl configuration to
 # feed forward to the child modules.
 locals {
-  environment = "rnd-1"
+ 
+  project_id = "heathco-supplychain-dev"
 }

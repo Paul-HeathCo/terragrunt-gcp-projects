@@ -19,3 +19,6 @@
 build/
 */build/
 out/
+
+#gcp secrets
+*.secret.json
