@@ -21,8 +21,8 @@ locals {
 
   remote_backend_gcp_region = local.remote_backend_vars.locals.remote_backend_gcp_region
   remote_backend_project_id = local.remote_backend_vars.locals.remote_backend_project_id
-  
-
+  supabase_api_key = get_env("SUPABASE_API_KEY")
+  cloudflare_api_key = get_env("CLOUDFLARE_API_KEY")
 }
 
 # Generate a GCP provider block
@@ -48,11 +48,11 @@ generate "provider" {
       }
 
       provider "supabase" {
-         access_token = get_env("SUPABASE_API_KEY")
+         access_token = "${local.supabase_api_key}"
       }
 
       provider "cloudflare" {
-         api_token = get_env("CLOUDFLARE_API_KEY")
+         api_token = "${local.cloudflare_api_key}"
       }
 EOF
 }
@@ -65,7 +65,7 @@ remote_state {
   config = {
     project  = local.remote_backend_project_id # The GCP project where the bucket will be created.
     location = local.remote_backend_gcp_region # The GCP location where the bucket will be created.
-    bucket = "terragrunt-state-${local.project_id}" # (Required) The name of the GCS bucket. This name must be globally unique. For more information, see Bucket Naming Guidelines.
+    bucket = "terragrunt-state-${local.remote_backend_project_id}" # (Required) The name of the GCS bucket. This name must be globally unique. For more information, see Bucket Naming Guidelines.
     prefix = "${path_relative_to_include()}/terraform.tfstate" #- (Optional) GCS prefix inside the bucket. Named states for workspaces are stored in an object called <prefix>/<name>.tfstate.
    }
 
@@ -87,6 +87,6 @@ inputs = merge(
 
   local.region_vars.locals,
   local.environment_vars.locals,
-  local.project_vars.locals
+  local.project_vars.locals,
   
 )
